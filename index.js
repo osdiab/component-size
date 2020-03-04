@@ -19,12 +19,7 @@ function getSize(el) {
   }
 }
 
-function useComponentSize(elemOrRef, opts) {
-  const el = elemOrRef && (
-    elemOrRef instanceof Element || elemOrRef instanceof HTMLDocument
-      ? elemOrRef
-      : elemOrRef.current
-  );
+function useComponentSize(el, opts) {
   var ResizeObserverConstructor = opts && opts.ResizeObserver
     ? opts.ResizeObserver
     : typeof ResizeObserver === 'function'
