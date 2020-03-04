@@ -18,29 +18,35 @@ function getSize(el) {
   }
 }
 
-function useComponentSize(ref, opts) {
+function useComponentSize(elemOrRef, opts) {
+  const el = elemOrRef && (
+    elemOrRef instanceof Element || elemOrRef instanceof HTMLDocument
+      ? elemOrRef
+      : elemOrRef.current
+  );
   var ResizeObserverConstructor = opts && opts.ResizeObserver
     ? opts.ResizeObserver
     : typeof ResizeObserver === 'function'
       ? ResizeObserver
       : undefined;
-  var _useState = useState(getSize(ref ? ref.current : {}))
+
+  var _useState = useState(getSize(el))
   var ComponentSize = _useState[0]
   var setComponentSize = _useState[1]
 
   var handleResize = useCallback(
     function handleResize() {
-      if (ref.current) {
-        setComponentSize(getSize(ref.current))
+      if (el) {
+        setComponentSize(getSize(el))
       }
     },
-    [ref]
+    [el]
   )
 
   useLayoutEffect(
     function() {
-      if (!ref.current) {
-        return
+      if (!el) {
+        return;
       }
 
       handleResize()
@@ -49,10 +55,10 @@ function useComponentSize(ref, opts) {
         var resizeObserver = new ResizeObserverConstructor(function() {
           handleResize()
         })
-        resizeObserver.observe(ref.current)
+        resizeObserver.observe(el)
 
         return function() {
-          resizeObserver.disconnect(ref.current)
+          resizeObserver.disconnect(el)
           resizeObserver = null
         }
       } else {
@@ -63,7 +69,7 @@ function useComponentSize(ref, opts) {
         }
       }
     },
-    [ref.current, ResizeObserverConstructor]
+    [el, ResizeObserverConstructor]
   )
 
   return ComponentSize

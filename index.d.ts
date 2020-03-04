@@ -7,4 +7,4 @@ interface ComponentSizeOptions {
   ResizeObserver?: ResizeObserver;
 }
 
-export default function useComponentSize<T = any>(ref: React.RefObject<T>, opts?: ComponentSizeOptions): ComponentSize
+export default function useComponentSize<T = any>(ref: T | React.RefObject<T>, opts?: ComponentSizeOptions): ComponentSize
